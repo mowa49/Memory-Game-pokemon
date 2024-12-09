@@ -1,5 +1,5 @@
 function Footer() {
-  return <div>footer</div>;
+  return <div className="font-sm text-white size"></div>;
 }
 
 export default Footer;

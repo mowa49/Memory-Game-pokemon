@@ -12,7 +12,7 @@ export default {
         "3xl": "1px 1px 5px 2px orange",
       },
       backgroundImage: {
-        "hero-pattern": "url('./bg.jpg')",
+        "hero-pattern": "url('/bg.jpg')",
         "footer-texture": "url('/img/footer-texture.png')",
       },
     },

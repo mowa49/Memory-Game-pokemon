@@ -1,6 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url("https://fonts.googleapis.com/css2?family=Doto:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jaro:opsz@6..72&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Doto:wght@100..900&family=Edu+AU+VIC+WA+NT+Arrows:wght@400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Jaro:opsz@6..72&family=Nova+Slim&display=swap");
 
 body {
   @apply font-sans; /* Apply Helvetica as the default font */
@@ -24,4 +28,26 @@ p {
 
 .button {
   @apply text-lg md:text-xl; /* Buttons */
+}
+
+h1 {
+  font-family: "Nova Slim";
+}
+
+@font-face {
+  font-family: "Jaro";
+  src: url("https://fonts.googleapis.com/css2?family=Jaro:opsz@6..72&display=swap")
+      format("woff2"),
+    url("https://fonts.googleapis.com/css2?family=Jaro:opsz@6..72&display=swap")
+      format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-optical-sizing: auto;
+}
+
+.jaro-bold {
+  font-family: "Jaro", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
 }

@@ -1,77 +1,93 @@
-interface imgs {
-  imgs: string;
-  pokemon: Pokemon;
-}
-interface pokies {
-  pokies: array;
-}
-
-interface Name {
-  name: string;
-}
-interface Pokemon {
-  pokemon: Pokemon; // Use a more descriptive name for the prop
-}
-interface CardProps {
-  pokemon: {
-    name: string;
-    sprites: {
-      front_default: string;
-    };
-  };
-  onClick: () => void; // Define the onClick prop type
-}
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./Card";
 
-function Main({ score, increaseScore, resetScore, handleMaxScore }) {
-  const [imgs, setImgs] = useState([]);
-  const [clicked, setClicked] = useState([]);
-  // const [shuffledImgs, setShuffledImgs] = useState([...imgs]);
+interface Pokemon {
+  id: number;
+  name: string;
+  sprites: {
+    front_default: string;
+  };
+}
 
-  let id = 2;
-  const ids = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25,
-  ];
+interface MainProps {
+  score: number;
+  increaseScore: () => void;
+  resetScore: () => void;
+  handleMaxScore: () => void;
+}
+
+const Main: React.FC<MainProps> = ({
+  score,
+  increaseScore,
+  resetScore,
+  handleMaxScore,
+}) => {
+  const [imgs, setImgs] = useState<Pokemon[]>([]);
+  const [clicked, setClicked] = useState<Pokemon[]>([]);
+  const [shuffled, setShuffled] = useState<Pokemon[]>([]);
+  const ids = Array.from({ length: 25 }, (_, i) => i + 1);
 
   useEffect(() => {
-    const fetchPokeImg = async (id) => {
+    const fetchPokeImg = async (id: number): Promise<Pokemon> => {
       const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
       if (!response.ok) throw new Error("fetch was not complete");
       const result = await response.json();
       return result;
     };
+
     const fetchAllImgs = async () => {
       try {
         const pokies = await Promise.all(ids.map((id) => fetchPokeImg(id)));
         setImgs(pokies);
+        setShuffled(getShuffledImgs(pokies));
       } catch (error) {
         console.log(error);
       } finally {
         console.log("finish");
       }
-      return;
     };
 
     fetchAllImgs();
-  }, [id]);
+  }, []);
 
-  function handleClick(pokemon) {
-    console.log(pokemon.id);
+  const handleClick = (pokemon: Pokemon) => {
     if (clicked.some((a) => a.id === pokemon.id)) {
-      resetScore(), setClicked([]);
-    } else setClicked([...clicked, pokemon]), increaseScore(), handleMaxScore();
-    HandleShuffle();
-  }
+      resetScore();
+      setClicked([]);
+    } else {
+      setClicked([...clicked, pokemon]);
+      increaseScore();
+      handleMaxScore();
+      setShuffled(getShuffledImgs(imgs));
+    }
+  };
 
-  function HandleShuffle() {
-    shuffleArray(imgs);
-  }
-  const shuffledImgs = shuffleArray(imgs).slice(0, 14);
+  const handleShuffle = () => {
+    setShuffled(shuffleArray(shuffled));
+  };
 
-  function shuffleArray(a) {
+  const getShuffledImgs = (imgs: Pokemon[]) => {
+    if (!imgs || imgs.length === 0) return [];
+    const shuffledImgs = shuffleArray(imgs).slice(0, 14);
+    const nonClicked = imgs.filter(
+      (poke) => !clicked.some((a) => a.id === poke.id)
+    );
+    const handleIncluding = shuffledImgs.some((img) =>
+      nonClicked.some((a) => img.id === a.id)
+    );
+
+    if (nonClicked.length > 0 && handleIncluding) {
+      return shuffledImgs;
+    } else if (nonClicked.length === 0) {
+      console.log("you won the game");
+      return [];
+    } else {
+      handleShuffle();
+      return shuffledImgs;
+    }
+  };
+
+  const shuffleArray = (a: Pokemon[]) => {
     let shuffledArray = a.slice(); // Create a copy of the array
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -81,16 +97,11 @@ function Main({ score, increaseScore, resetScore, handleMaxScore }) {
       ];
     }
     return shuffledArray;
-  }
-
-  //   useEffect(() => {
-  //     makeList = async () => await setImgs[...imgs, ids.map((id) => fetchPokeImg(id));
-  //     ]})
-
-  //   [cards, setCards] = useState();
+  };
+  console.log(score);
   return (
     <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] m-10 gap-10">
-      {shuffledImgs.map((pokemon) => (
+      {shuffled.map((pokemon) => (
         <Card
           pokemon={pokemon}
           key={pokemon.name}
@@ -99,11 +110,6 @@ function Main({ score, increaseScore, resetScore, handleMaxScore }) {
       ))}
     </div>
   );
-}
+};
 
-// function shuffle(array) {
-//   for (let i = array.lenght - 1; i > 0; i--) {
-//     let j = Math.floor(Math.random() * (i + 1));
-//   }
-// }
 export default Main;

@@ -8,7 +8,6 @@ function App() {
   const [maxScore, setMaxScore] = useState(0);
 
   function handleMaxScore() {
-    console.log(maxScore);
     if (maxScore <= score) {
       setMaxScore(score + 1);
     } else return;

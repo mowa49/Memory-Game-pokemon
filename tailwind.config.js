@@ -4,7 +4,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Helvetica", "Arial", "sans-serif"], // Add Helvetica to the sans family
+        doto: ["Doto", "sans-serif"],
+        edu: ["Edu Australia VIC WA NT Hand Arrows"],
+        jaro: ['"Jaro"', "sans-serif"],
       },
       boxShadow: {
         "3xl": "1px 1px 5px 2px orange",
